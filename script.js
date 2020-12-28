@@ -1,3 +1,6 @@
+//environment
+
+//functions
 const getYieldForPlant = (plantObject) => plantObject.yield;
 
 const getYieldForCrop = (cropObject) =>
