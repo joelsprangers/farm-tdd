@@ -8,13 +8,6 @@ const {
   getTotalProfit,
 } = require("./script");
 
-//test input environment
-const environmentFactors = {
-  sun: "low",
-  wind: "low",
-  temperature: "high",
-};
-
 //test input as a plant type object
 const corn = {
   name: "corn",
@@ -26,6 +19,16 @@ const corn = {
       low: -50,
       medium: 0,
       high: 50,
+    },
+    wind: {
+      low: 0,
+      medium: 0,
+      high: 0,
+    },
+    temperature: {
+      low: -70,
+      medium: 20,
+      high: 70,
     },
   },
 };
@@ -41,6 +44,16 @@ const pumpkin = {
       medium: 0,
       high: 50,
     },
+    wind: {
+      low: 0,
+      medium: 0,
+      high: 0,
+    },
+    temperature: {
+      low: 10,
+      medium: 10,
+      high: 20,
+    },
   },
 };
 
@@ -51,26 +64,107 @@ const apple = {
   salePrice: 2,
   factors: {
     sun: {
-      low: -50,
+      low: -30,
       medium: 0,
-      high: 50,
+      high: 30,
+    },
+    wind: {
+      low: 40,
+      medium: 30,
+      high: 20,
+    },
+    temperature: {
+      low: -70,
+      medium: 40,
+      high: -10,
     },
   },
 };
 
 describe("getYieldForPlant", () => {
   test("Get yield for plant with no environment factors", () => {
-    expect(getYieldForPlant(corn)).toBe(30);
+    const environmentFactors = {};
+
+    const input = {
+      crop: corn,
+      weather: environmentFactors,
+    };
+    expect(getYieldForPlant(input)).toBe(30);
   });
 
   test("Get yield for plant with sun low", () => {
-    expect(getYieldForPlant(corn)).toBe(15);
+    const environmentFactors = {
+      sun: "low",
+    };
+    const input = {
+      crop: corn,
+      weather: environmentFactors,
+    };
+    expect(getYieldForPlant(input)).toBe(15);
   });
 
   test("Get yield for plant with sun high", () => {
-    expect(getYieldForPlant(corn)).toBe(45);
+    const environmentFactors = {
+      sun: "high",
+    };
+    const input = {
+      crop: corn,
+      weather: environmentFactors,
+    };
+    expect(getYieldForPlant(input)).toBe(45);
   });
-});
+
+  test("Get yield for plant with wind low", () => {
+    const environmentFactors = {
+      wind: "low",
+    };
+    const input = {
+      crop: corn,
+      weather: environmentFactors,
+    };
+    expect(getYieldForPlant(input)).toBe(30);
+  });
+
+  test("Get yield for plant with temperature high", () => {
+    const environmentFactors = {
+      temperature: "high",
+    };
+    const input = {
+      crop: corn,
+      weather: environmentFactors,
+    };
+    expect(getYieldForPlant(input)).toBe(51);
+  });
+
+  test("Get yield for plant with sun high and wind low", () => {
+    const environmentFactors = {
+      sun: "high",
+      wind: "low",
+    };
+    const input = {
+      crop: corn,
+      weather: environmentFactors,
+    };
+    expect(getYieldForPlant(input)).toBe(45);
+  });
+
+  test("Get yield for plant with temperature medium and sun high", () => {
+    const environmentFactors = {
+      sun: "high",
+      temperature: "medium",
+    };
+
+    const input = {
+      crop: corn,
+      weather: environmentFactors,
+    };
+    expect(getYieldForPlant(input)).toBe(30 * 1.2 * 1.5);
+  });
+
+  test("Get yield for plant with temperature high and sun low", () => {
+    expect(getYieldForPlant(corn)).toBe(30 * 0.5 * 1.7);
+  });
+}); //deze
 
 describe("getYieldForCrop", () => {
   test("Get yield for crop, simple", () => {
@@ -80,7 +174,7 @@ describe("getYieldForCrop", () => {
     };
     expect(getYieldForCrop(input)).toBe(300);
   });
-});
+}); //deze
 
 describe("getTotalYield", () => {
   test("Calculate total yield with multiple crops", () => {
@@ -128,7 +222,7 @@ describe("getProfitForCrop", () => {
   test("Get profit for crop", () => {
     expect(getProfitForCrop(input)).toBe(2700);
   });
-});
+}); //deze
 
 describe("getTotalProfit", () => {
   test("Calculate total profit with multiple crops", () => {
@@ -144,4 +238,4 @@ describe("getTotalProfit", () => {
     const crops = [{ crop: corn, numCrops: 0 }];
     expect(getTotalYield({ crops })).toBe(0);
   });
-});
+}); //deze
