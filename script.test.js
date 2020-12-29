@@ -182,37 +182,67 @@ describe("getYieldForPlant", () => {
     };
     expect(getYieldForPlant(input)).toBe(30 * 0.5 * 1.7);
   });
-}); //deze
+});
 
 describe("getYieldForCrop", () => {
-  test("Get yield for crop, simple", () => {
+  test("Get yield for crop Get yield for plant with temperature high and sun low", () => {
+    const environmentFactors = {
+      sun: "low",
+      temperature: "high",
+    };
     const input = {
       crop: corn,
       numCrops: 10,
+      weather: environmentFactors,
     };
-    expect(getYieldForCrop(input)).toBe(300);
+    expect(getYieldForCrop(input)).toBe(30 * 0.5 * 1.7 * 10);
   });
-}); //deze
+});
 
 describe("getTotalYield", () => {
   test("Calculate total yield with multiple crops", () => {
+    const environmentFactors = {};
+    const input = {
+      crop: corn,
+      numCrops: 10,
+      weather: environmentFactors,
+    };
     const crops = [
-      { crop: corn, numCrops: 5 },
-      { crop: pumpkin, numCrops: 2 },
+      { crop: corn, numCrops: 5, weather: environmentFactors },
+      { crop: pumpkin, numCrops: 2, weather: environmentFactors },
     ];
     expect(getTotalYield({ crops })).toBe(158);
   });
 
+  test("Calculate total yield with multiple crops with sun high", () => {
+    const environmentFactors = {
+      sun: "high",
+    };
+    const input = {
+      crop: corn,
+      numCrops: 10,
+      weather: environmentFactors,
+    };
+    const crops = [
+      { crop: corn, numCrops: 5, weather: environmentFactors },
+      { crop: pumpkin, numCrops: 2, weather: environmentFactors },
+    ];
+    expect(getTotalYield({ crops })).toBe(237);
+  });
+
   test("Calculate total yield with 0 amount", () => {
-    const crops = [{ crop: corn, numCrops: 0 }];
+    const environmentFactors = {};
+    const crops = [{ crop: corn, numCrops: 0, weather: environmentFactors }];
     expect(getTotalYield({ crops })).toBe(0);
   });
 });
 
 describe("getCostsForCrop", () => {
+  const environmentFactors = {};
   const input = {
     crop: pumpkin,
     numCrops: 10,
+    weather: environmentFactors,
   };
 
   test("Get cost for crop", () => {
@@ -221,9 +251,11 @@ describe("getCostsForCrop", () => {
 });
 
 describe("getRevenueForCrop", () => {
+  const environmentFactors = {};
   const input = {
     crop: apple,
     numCrops: 10,
+    weather: environmentFactors,
   };
 
   test("Get revenue for crop", () => {
@@ -232,28 +264,57 @@ describe("getRevenueForCrop", () => {
 });
 
 describe("getProfitForCrop", () => {
-  const input = {
-    crop: apple,
-    numCrops: 10,
-  };
-
-  test("Get profit for crop", () => {
+  test("Get profit for crop simple case", () => {
+    const environmentFactors = {};
+    const input = {
+      crop: apple,
+      numCrops: 10,
+      weather: environmentFactors,
+    };
     expect(getProfitForCrop(input)).toBe(2700);
+  });
+
+  test("Get profit for crop temperature medium and wind high", () => {
+    const environmentFactors = {
+      temperature: "medium",
+      wind: "high",
+    };
+    const input = {
+      crop: apple,
+      numCrops: 10,
+      weather: environmentFactors,
+    };
+    expect(getProfitForCrop(input)).toBe(185 * 1.4 * 1.2 * 10 * 2 - 10 * 100);
   });
 }); //deze
 
 describe("getTotalProfit", () => {
   test("Calculate total profit with multiple crops", () => {
+    const environmentFactors = {};
     const crops = [
-      { crop: corn, numCrops: 5 },
-      { crop: pumpkin, numCrops: 2 },
-      { crop: apple, numCrops: 4 },
+      { crop: corn, numCrops: 5, weather: environmentFactors },
+      { crop: pumpkin, numCrops: 2, weather: environmentFactors },
+      { crop: apple, numCrops: 4, weather: environmentFactors },
     ];
     expect(getTotalProfit({ crops })).toBe(2145);
   });
 
+  test("Calculate total profit with multiple crops, sun high and wind low", () => {
+    const environmentFactors = {
+      sun: "high",
+      wind: "low",
+    };
+    const crops = [
+      { crop: corn, numCrops: 5, weather: environmentFactors },
+      { crop: pumpkin, numCrops: 2, weather: environmentFactors },
+      { crop: apple, numCrops: 4, weather: environmentFactors },
+    ];
+    expect(getTotalProfit({ crops })).toBe(3978.6);
+  });
+
   test("Calculate total profit with 0 amount", () => {
-    const crops = [{ crop: corn, numCrops: 0 }];
+    const environmentFactors = {};
+    const crops = [{ crop: corn, numCrops: 0, weather: environmentFactors }];
     expect(getTotalYield({ crops })).toBe(0);
   });
-}); //deze
+});

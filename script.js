@@ -3,7 +3,7 @@
 const getYieldForPlant = (input) => {
   let environmentFactors = input.weather;
   let crop = input.crop;
-  let newPlantYield = crop.yield;
+  let newPlantYield = input.crop.yield;
 
   for (const [key, value] of Object.entries(crop.factors.sun)) {
     if (key === environmentFactors.sun) {
@@ -25,9 +25,10 @@ const getYieldForPlant = (input) => {
   return newPlantYield;
 };
 
-const getYieldForCrop = (cropObject) =>
-  cropObject.crop.yield * cropObject.numCrops;
-//deze
+const getYieldForCrop = (input) => {
+  let newPlantYield = getYieldForPlant(input);
+  return newPlantYield * input.numCrops;
+};
 
 const getTotalYield = ({ crops }) => {
   let total = 0;
@@ -37,17 +38,15 @@ const getTotalYield = ({ crops }) => {
   return total;
 };
 
-const getCostsForCrop = (cropObject) =>
-  cropObject.crop.cost * cropObject.numCrops;
+const getCostsForCrop = (input) => input.crop.cost * input.numCrops;
 
-const getRevenueForCrop = (cropObjectAndAmount) =>
-  cropObjectAndAmount.crop.yield *
-  cropObjectAndAmount.crop.salePrice *
-  cropObjectAndAmount.numCrops;
+const getRevenueForCrop = (input) => {
+  let yieldCrops = getYieldForCrop(input) * input.crop.salePrice;
+  return yieldCrops;
+};
 
 const getProfitForCrop = (input) =>
   getRevenueForCrop(input) - getCostsForCrop(input);
-//deze
 
 const getTotalProfit = ({ crops }) => {
   let totalProfit = 0;
@@ -57,7 +56,6 @@ const getTotalProfit = ({ crops }) => {
   });
   return totalProfit;
 };
-//deze
 
 module.exports = {
   getYieldForPlant,
